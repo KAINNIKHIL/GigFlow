@@ -10,6 +10,7 @@ import authRoutes from "./routes/auth.route.js";
 import gigRoutes from "./routes/gig.route.js";
 import bidRoutes from "./routes/bid.route.js";
 import hireRoutes from "./routes/hire.route.js";
+import notificationRoutes from "./routes/notification.route.js"
 
 dotenv.config();
 connectDB();
@@ -41,6 +42,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/gigs", gigRoutes);
 app.use("/api/bids", bidRoutes);
 app.use("/api/hire", hireRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 
 // socket 

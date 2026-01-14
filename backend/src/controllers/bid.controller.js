@@ -1,5 +1,6 @@
 import Bid from "../models/Bid.js";
 import Gig from "../models/Gig.js";
+import Notification from "../models/Notification.js";
 
 export const createBid = async (req, res) => {
   try {
@@ -22,16 +23,25 @@ export const createBid = async (req, res) => {
       bidderId: req.user.id,
       message,
       price,
+      status: "pending",
     });
 
-    // 🔔 Send real-time notification to gig owner
-    const io = req.app.get("io"); // get socket instance from server
+     const notification = await Notification.create({
+      userId: gig.ownerId,
+      type: "NEW_BID",
+      message: `New bid of ₹${price} on "${gig.title}"`,
+      gigId,
+    });
+
+    
+    const io = req.app.get("io"); 
     io.to(gig.ownerId.toString()).emit("new-bid", {
       gigId,
       bidId: bid._id,
       bidderId: req.user.id,
       message,
       price,
+      
     });
 
     res.status(201).json(bid);
