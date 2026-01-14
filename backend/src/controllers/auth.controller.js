@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const createToken = (userId) =>{
-    jwt.sign({id:userId}, process.env.JWT_SECRET, { expiresIn: "7d" })
+    return jwt.sign({id:userId}, process.env.JWT_SECRET, { expiresIn: "7d" })
 }
 
 export const register = async(req, res)=>{
@@ -37,14 +37,14 @@ export const login = async(req, res)=>{
         if(!exists) return res.status(400).json({message: "Invalid Credentials"});
 
         const isMatch = await bcrypt.compare(password, exists.password);
-        if(!exists) return res.status(400).json({message: "Invalid Credentials"});
+        if(!isMatch) return res.status(400).json({message: "Invalid Credentials"});
 
         const token = createToken(exists._id);
 
         res.cookie("token",token,{
             httpOnly: true,
             secure: false,
-            sameSite: "strict"
+            sameSite: "lax"
         });
 
         res.json({
@@ -60,4 +60,9 @@ export const login = async(req, res)=>{
 export const logout = async(req, res)=>{
     res.clearCookie("token");
     res.json({message:"Logged Out"});
+};
+
+
+export const getMe = (req, res) => {
+  res.json({ id: req.user.id, name: req.user.name, email: req.user.email });
 };

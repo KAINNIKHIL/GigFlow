@@ -42,6 +42,7 @@ app.use("/api/gigs", gigRoutes);
 app.use("/api/bids", bidRoutes);
 app.use("/api/hire", hireRoutes);
 
+
 // socket 
 io.on("connection", (socket) => {
   console.log("Socket connected:", socket.id);

@@ -8,7 +8,8 @@ export const createGig = async(req, res)=>{
             title,
             description,
             budget,
-            ownerId: req.user.id
+            ownerId: req.user.id,
+            status: "open"
         });
 
         res.status(201).json(gig);
@@ -20,7 +21,7 @@ export const createGig = async(req, res)=>{
 
 export const getGigs = async(req, res)=>{
     try{
-        const search = req.query;
+        const { search } = req.query;
 
         const filter = {status: "open"};
 
@@ -35,3 +36,14 @@ export const getGigs = async(req, res)=>{
         res.status(500).json({ message: err.message });
     }
 }
+
+
+export const getGigById = async (req, res) => {
+  try {
+    const gig = await Gig.findById(req.params.id);
+    if (!gig) return res.status(404).json({ message: "Gig not found" });
+    res.json(gig);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
